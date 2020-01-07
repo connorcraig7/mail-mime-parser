@@ -70,7 +70,16 @@ class MimePart extends ParentHeaderPart
      */
     public function isTextPart()
     {
-        return ($this->getCharset() !== null);
+        // Some emails will come with an attachment such as a pdf with a charset assigned.
+        # return ($this->getCharset() !== null);
+        // Checking the Content Type and Disposition should provide a more accurate result.
+        $c_type = $this->getContentType();
+        $c_disposition = $this->getContentDisposition();
+        if($c_disposition == 'inline' && ($c_type == 'text/plain' || $c_type == 'text/html')){
+            return True;
+        }else{
+            return False;
+        }
     }
     
     /**
